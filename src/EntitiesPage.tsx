@@ -17,20 +17,21 @@ export default function EntitiesPage() {
 
 	return (
 		<div>
-			<h2>Обекти</h2>
+			<div className="mt-n3 mx-n3 px-3 pt-3 bg-secondary text-light">
+				<h2>Обекти</h2>
+				<ul className='nav nav-tabs border-0'>
+					{views.map(v => (
+						<li key={v} className='nav-item'>
+							<a className={`nav-link ${activeView === v ? 'active' : ''}`}
+								onClick={changeView}>
+								{v}
+							</a>
+						</li>
+					))}
+				</ul>
+			</div>
 
-			<ul className='nav nav-tabs mb-3'>
-				{views.map(v => (
-					<li key={v} className='nav-item'>
-						<a className={`nav-link ${activeView === v ? 'active' : ''}`}
-							onClick={changeView}>
-							{v}
-						</a>
-					</li>
-				))}
-			</ul>
-
-			<div className='list-group'>
+			<div className='list-group mt-3'>
 				{sortedEntities.map(e => (
 					<Link key={e.name} to={`/entity/${e.name}`} className='list-group-item list-group-item-action'>
 						<div className='d-flex justify-content-between align-items-center'>
