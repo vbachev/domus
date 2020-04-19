@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, Route, BrowserRouter } from "react-router-dom";
 import { DatasetContext, loadDataset, defaultDataset } from './dataset'
-import Header from './Header'
+import Navigation from './Navigation'
 import HomePage from './HomePage'
 import EntitiesPage from './EntitiesPage'
 import EntityPage from './EntityPage'
@@ -15,7 +15,7 @@ export default function App() {
 	return (
 		<BrowserRouter>
 			<DatasetContext.Provider value={dataset}>
-				<Header />
+				<Navigation />
 				<div className='container py-3'>
 					<Switch>
 						<Route exact path='/' component={HomePage} />

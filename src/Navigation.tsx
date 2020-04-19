@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, useLocation } from "react-router-dom";
 
-export default function Header() {
+export default function Navigation() {
 	const { pathname } = useLocation()
 	const menuItems = [
 		{ label: 'Баланси', href: '/' },
@@ -12,7 +12,7 @@ export default function Header() {
 			<div className='container'>
 				<div className='navbar-nav mr-auto'>
 					{menuItems.map(m => (
-						<Link to={m.href}
+						<Link key={m.href} to={m.href}
 							className={`nav-item nav-link ${pathname === m.href ? 'active' : ''}`}>
 							{m.label}
 						</Link>
