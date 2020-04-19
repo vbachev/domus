@@ -11,10 +11,13 @@ export default function HomePage() {
 			</div>
 
 			<ul className='list-group mt-3'>
+				<li className='list-group-item list-group-item-action active'>
+					Общо: {accounts.reduce((total, account) => total + account.amount, 0)}лв
+				</li>
 				{accounts.map(({ name, amount }) => (
-					<li key={name} className='list-group-item  list-group-item-action'>
+					<li key={name} className='list-group-item list-group-item-action'>
 						{name}: {amount.toFixed(2)}лв
-            </li>
+					</li>
 				))}
 			</ul>
 		</div>
