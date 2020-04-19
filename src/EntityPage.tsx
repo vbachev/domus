@@ -17,17 +17,17 @@ export default function EntityPage(props: any) {
 	return (
 		<div>
 			<div className="mt-n3 mx-n3 px-3 pt-3 bg-secondary text-light">
-			<h2>{name}</h2>
+				<h2>{name}</h2>
 				<ul className='nav nav-tabs border-0'>
-				{views.map(v => (
-					<li key={v} className='nav-item'>
-						<a className={`nav-link ${activeView === v ? 'active' : ''}`}
-							onClick={changeView}>
-							{v}
-						</a>
-					</li>
-				))}
-			</ul>
+					{views.map(v => (
+						<li key={v} className='nav-item'>
+							<a className={`nav-link ${activeView === v ? 'active' : ''}`}
+								onClick={changeView}>
+								{v}
+							</a>
+						</li>
+					))}
+				</ul>
 			</div>
 
 			{activeView === views[1] && (
@@ -41,25 +41,22 @@ export default function EntityPage(props: any) {
 			)}
 
 			{activeView === views[0] && (
-				<div className='row'>
-					<table className='table table-striped'>
-						<thead>
-							<tr>
-								<th>Дата</th>
-								<th>Сума</th>
-								<th>Описание</th>
-							</tr>
-						</thead>
-						<tbody>
-							{entity.transactions.map(t => (
-								<tr key={t.date + t.comment}>
-									<td>{t.getFormattedDate()}</td>
-									<td>{t.amount}лв</td>
-									<td>{t.comment}</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
+				<div className='list-group mt-3'>
+					{entity.transactions.map(t => (
+						<div key={t.date + t.comment + t.amount}
+							className='list-group-item list-group-item-action'>
+							<small className='d-flex justify-content-between align-items-center'>
+								<div>{t.getFormattedDate()}</div>
+								<div className='text-muted'>
+									{t.person}
+								</div>
+							</small>
+							<span className='badge badge-secondary mr-2'>
+								{t.amount}лв
+								</span>
+							{t.comment}
+						</div>
+					))}
 				</div>
 			)}
 		</div>
