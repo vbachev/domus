@@ -67,6 +67,12 @@ class Account {
 	}
 }
 
+interface Dataset {
+	transactions: Transaction[]
+	accounts: Account[]
+	entities: Entity[]
+}
+
 const getTransactions = (): Promise<string[][]> => new Promise(resolve => {
 	const gsapi = GSAPI({
 		clientId: '780267795399-048pa12qtdcpdganklc6ggmpbm3epucv.apps.googleusercontent.com',
@@ -88,20 +94,7 @@ function groupTransactionsByKey(transactions: Transaction[], key: string): Trans
 	return Object.values(transactionsByKey)
 }
 
-export const defaultDataset = {
-	transactions: [] as Transaction[],
-	accounts: [] as Account[],
-	entities: [] as Entity[]
-}
-
-export const DatasetContext = React.createContext(defaultDataset)
-
-export const loadDataset = async () => {
-	const rawTransactions: string[][] = await getTransactions()
-	if (!rawTransactions) {
-		console.error('Could not fetch any transactions!')
-		return defaultDataset
-	}
+function parseRawTransactions(rawTransactions: string[][]): Dataset {
 	rawTransactions.shift() // skip header row
 	const transactions = rawTransactions.map(t => new Transaction(t))
 		.sort((a, b) => a.date.getTime() - b.date.getTime())
@@ -111,4 +104,22 @@ export const loadDataset = async () => {
 		.map(t => new Entity(t))
 		.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
 	return { transactions, accounts, entities }
+}
+
+const cachedTransactions = window.localStorage.getItem('transactions')
+
+export const defaultDataset: Dataset = cachedTransactions
+	? parseRawTransactions(JSON.parse(cachedTransactions))
+	: { transactions: [], accounts: [], entities: [] }
+
+export const DatasetContext = React.createContext(defaultDataset)
+
+export const loadDataset = async () => {
+	const rawTransactions: string[][] = await getTransactions()
+	if (!rawTransactions) {
+		console.error('Could not fetch any transactions!')
+		return defaultDataset
+	}
+	window.localStorage.setItem('transactions', JSON.stringify(rawTransactions))
+	return parseRawTransactions(rawTransactions)
 }
