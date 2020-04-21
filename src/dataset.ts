@@ -103,13 +103,12 @@ export const loadDataset = async () => {
 		return defaultDataset
 	}
 	rawTransactions.shift() // skip header row
-	const transactions = rawTransactions.map(t => new Transaction(t));
-	const accounts = groupTransactionsByKey(transactions, 'account').map(t => new Account(t))
-	const entities = groupTransactionsByKey(transactions, 'entity').map(t => new Entity(t))
-	entities.sort((a, b) => {
-		if (a.name < b.name) return -1
-		if (a.name > b.name) return 1
-		return 0
-	})
+	const transactions = rawTransactions.map(t => new Transaction(t))
+		.sort((a, b) => a.date.getTime() - b.date.getTime())
+	const accounts = groupTransactionsByKey(transactions, 'account')
+		.map(t => new Account(t))
+	const entities = groupTransactionsByKey(transactions, 'entity')
+		.map(t => new Entity(t))
+		.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
 	return { transactions, accounts, entities }
 }
