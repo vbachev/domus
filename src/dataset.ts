@@ -11,19 +11,19 @@ class Transaction {
 	comment: string
 
 	constructor(row: string[]) {
-		const dateParts = row[0].split('.').map(s => Number(s));
-		this.date = new Date(dateParts[2], dateParts[1], dateParts[0])
-		this.account = String(row[3])
+		const [day, month, year] = row[0].split('.').map(Number);
+		this.date = new Date(year, month - 1, day) // months are 0-based
+		this.account = row[3]
 		this.amount = Number(row[4])
-		this.person = String(row[2])
-		this.entity = String(row[1])
-		this.comment = String(row[5])
+		this.person = row[2]
+		this.entity = row[1]
+		this.comment = row[5]
 	}
 
 	getFormattedDate(): string {
 		return [
 			this.date.getDate(),
-			this.date.getMonth() + 1,
+			this.date.getMonth() + 1, // months are 0-based
 			this.date.getFullYear()
 		]
 			.map(i => i.toString().padStart(2, '0'))
