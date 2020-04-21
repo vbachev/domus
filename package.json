@@ -1,5 +1,6 @@
 {
 	"name": "domus",
+	"description": "A helper app for my concierge duties",
 	"version": "0.1.0",
 	"private": false,
 	"author": {

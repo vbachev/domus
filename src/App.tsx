@@ -1,11 +1,11 @@
 import React from 'react';
 import { Switch, Route, BrowserRouter } from "react-router-dom";
+import { name as appName } from '../package.json'
 import { DatasetContext, loadDataset, defaultDataset } from './dataset'
 import Navigation from './Navigation'
 import HomePage from './HomePage'
 import EntitiesPage from './EntitiesPage'
 import EntityPage from './EntityPage'
-import packageJSON from '../package.json'
 
 export default function App() {
 	const [dataset, setDataset] = React.useState(defaultDataset)
@@ -14,7 +14,7 @@ export default function App() {
 	}, [])
 
 	return (
-		<BrowserRouter basename={packageJSON.name}>
+		<BrowserRouter basename={appName}>
 			<DatasetContext.Provider value={dataset}>
 				<Navigation />
 				<div className='container py-3'>
