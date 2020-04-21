@@ -16,7 +16,7 @@ export default function EntityPage(props: any) {
 
 	return (
 		<div>
-			<div className="mt-n3 mx-n3 px-3 pt-3 bg-secondary text-light">
+			<div className="mt-n3 mx-n3 mb-3 px-3 pt-3 bg-secondary text-light">
 				<h2>{name}</h2>
 				<ul className='nav nav-tabs border-0'>
 					{views.map(v => (
@@ -31,7 +31,7 @@ export default function EntityPage(props: any) {
 			</div>
 
 			{activeView === views[1] && (
-				<div className='list-group mt-3'>
+				<div className='list-group'>
 					{entity.people.map(person => (
 						<div key={person} className='list-group-item list-group-item-action'>
 							{person}
@@ -41,7 +41,7 @@ export default function EntityPage(props: any) {
 			)}
 
 			{activeView === views[0] && (
-				<div className='list-group mt-3'>
+				<div className='list-group'>
 					{entity.transactions.map(t => (
 						<div key={t.date + t.comment + t.amount}
 							className='list-group-item list-group-item-action'>
