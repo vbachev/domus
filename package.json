@@ -1,7 +1,17 @@
 {
-	"name": "concierge-app",
+	"name": "domus",
 	"version": "0.1.0",
-	"private": true,
+	"private": false,
+	"author": {
+		"name": "Vasil Bachev",
+		"email": "vasil@vasilbachev.com"
+	},
+	"homepage": "https://vbachev.github.io/domus",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/vbachev/domus.git"
+	},
+	"license": "ISC",
 	"dependencies": {
 		"@testing-library/jest-dom": "^4.2.4",
 		"@testing-library/react": "^9.5.0",
