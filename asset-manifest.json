@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/domus/static/css/main.507877fb.chunk.css",
+    "main.js": "/domus/static/js/main.6723971d.chunk.js",
+    "main.js.map": "/domus/static/js/main.6723971d.chunk.js.map",
+    "runtime-main.js": "/domus/static/js/runtime-main.f4a8f33d.js",
+    "runtime-main.js.map": "/domus/static/js/runtime-main.f4a8f33d.js.map",
+    "static/css/2.de424728.chunk.css": "/domus/static/css/2.de424728.chunk.css",
+    "static/js/2.be407806.chunk.js": "/domus/static/js/2.be407806.chunk.js",
+    "static/js/2.be407806.chunk.js.map": "/domus/static/js/2.be407806.chunk.js.map",
+    "index.html": "/domus/index.html",
+    "precache-manifest.b93e4b3c4a33e92945687679f64e3e6a.js": "/domus/precache-manifest.b93e4b3c4a33e92945687679f64e3e6a.js",
+    "service-worker.js": "/domus/service-worker.js",
+    "static/css/2.de424728.chunk.css.map": "/domus/static/css/2.de424728.chunk.css.map",
+    "static/css/main.507877fb.chunk.css.map": "/domus/static/css/main.507877fb.chunk.css.map",
+    "static/js/2.be407806.chunk.js.LICENSE.txt": "/domus/static/js/2.be407806.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.f4a8f33d.js",
+    "static/css/2.de424728.chunk.css",
+    "static/js/2.be407806.chunk.js",
+    "static/css/main.507877fb.chunk.css",
+    "static/js/main.6723971d.chunk.js"
+  ]
+}
