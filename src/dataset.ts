@@ -43,11 +43,11 @@ class Entity {
 	}
 
 	getLastPerson(): string {
-		return this.transactions[this.transactions.length - 1].person;
+		return this.transactions[0].person;
 	}
 
 	getMonthsOverdue(): number {
-		const lastTransaction = this.transactions[this.transactions.length - 1];
+		const lastTransaction = this.transactions[0];
 		const now = new Date();
 		const yearsAgo = now.getFullYear() - lastTransaction.date.getFullYear();
 		const monthsAgo = now.getMonth() - lastTransaction.date.getMonth();
@@ -97,7 +97,7 @@ function groupTransactionsByKey(transactions: Transaction[], key: string): Trans
 function parseRawTransactions(rawTransactions: string[][]): Dataset {
 	rawTransactions.shift() // skip header row
 	const transactions = rawTransactions.map(t => new Transaction(t))
-		.sort((a, b) => a.date.getTime() - b.date.getTime())
+		.sort((a, b) => b.date.getTime() - a.date.getTime())
 	const accounts = groupTransactionsByKey(transactions, 'account')
 		.map(t => new Account(t))
 	const entities = groupTransactionsByKey(transactions, 'entity')

@@ -41,7 +41,7 @@ export default function EntitiesPage() {
                 </span>
 						</div>
 						<small className='text-muted'>
-							{e.people[e.people.length - 1]}
+							{e.getLastPerson()}
 						</small>
 
 					</Link>
