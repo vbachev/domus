@@ -42,14 +42,12 @@ export default function EntityPage(props: any) {
 
 			{activeView === views[0] && (
 				<div className='list-group'>
-					{entity.transactions.map(t => (
+					{entity.transactions.map((t, i) => (
 						<div key={t.date + t.comment + t.amount}
-							className='list-group-item list-group-item-action'>
+							className={`list-group-item ${i === 0 ? 'list-group-item-warning text-body' : ''}`}>
 							<small className='d-flex justify-content-between align-items-center'>
 								<div>{t.getFormattedDate()}</div>
-								<div className='text-muted'>
-									{t.person}
-								</div>
+								<div>{t.person}</div>
 							</small>
 							<span className='badge badge-secondary mr-2'>
 								{t.amount}лв
