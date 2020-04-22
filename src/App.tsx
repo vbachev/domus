@@ -6,6 +6,7 @@ import Navigation from './Navigation'
 import HomePage from './HomePage'
 import EntitiesPage from './EntitiesPage'
 import EntityPage from './EntityPage'
+import ScrollToTop from './ScrollToTop'
 
 export default function App() {
 	const [dataset, setDataset] = React.useState(defaultDataset)
@@ -16,6 +17,7 @@ export default function App() {
 	return (
 		<BrowserRouter basename={appName}>
 			<DatasetContext.Provider value={dataset}>
+				<ScrollToTop />
 				<Navigation />
 				<div className='container py-3'>
 					<Switch>
