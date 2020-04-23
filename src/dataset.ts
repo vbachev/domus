@@ -9,6 +9,7 @@ class Transaction {
 	person: string
 	entity: string
 	comment: string
+	// @TODO: hash an id for use in loop keys
 
 	constructor(row: string[]) {
 		const [day, month, year] = row[0].split('.').map(Number);
@@ -20,6 +21,7 @@ class Transaction {
 		this.comment = row[5]
 	}
 
+	// @TODO: simplify
 	getFormattedDate(): string {
 		return [
 			this.date.getDate(),
@@ -35,11 +37,13 @@ class Entity {
 	name: string
 	transactions: Transaction[]
 	people: string[]
+	notes: Note[]
 
 	constructor(transactions: Transaction[]) {
 		this.name = transactions[0].entity;
 		this.transactions = transactions;
 		this.people = Array.from(new Set(transactions.map(t => t.person)));
+		this.notes = [] // @TODO: as second argument
 	}
 
 	getLastPerson(): string {
@@ -52,6 +56,12 @@ class Entity {
 		const yearsAgo = now.getFullYear() - lastTransaction.date.getFullYear();
 		const monthsAgo = now.getMonth() - lastTransaction.date.getMonth();
 		return yearsAgo * 12 + monthsAgo;
+	}
+
+	// @TODO: as second constructor argument
+	setNotes(notes: Note[]): Entity {
+		if (notes) this.notes = notes
+		return this
 	}
 }
 
@@ -67,19 +77,51 @@ class Account {
 	}
 }
 
+class Note {
+	date: Date
+	formattedDate: string
+	about: string
+	message: string
+
+	constructor(note: string[]) {
+		const [day, month, year] = note[0].split('.').map(Number);
+		this.date = new Date(year, month - 1, day) // months are 0-based
+		this.formattedDate = note[0]
+		this.about = note[1]
+		this.message = note[2]
+	}
+}
+
 interface Dataset {
 	transactions: Transaction[]
 	accounts: Account[]
 	entities: Entity[]
 }
 
-const getTransactions = (): Promise<string[][]> => new Promise(resolve => {
+interface RawRecords {
+	transactions: string[][]
+	notes: string[][]
+}
+
+const promisify = (fn: Function) => (...args: any) => new Promise(resolve => fn(...args, resolve))
+
+const fetchRawRecords = (): Promise<RawRecords> => new Promise(resolve => {
+	const sheets = {
+		transactions: 'Движения',
+		notes: 'Бележки'
+	}
 	const gsapi = GSAPI({
 		clientId: '780267795399-048pa12qtdcpdganklc6ggmpbm3epucv.apps.googleusercontent.com',
-		spreadsheet: { name: 'База данни ЕС', sheets: ['Движения'] }
+		spreadsheet: { name: 'База данни ЕС', sheets: Object.values(sheets) }
 	}, () => {
 		gsapi.user.signIn(() => {
-			gsapi.getAll('Движения', resolve)
+			const getAll = promisify(gsapi.getAll)
+			Promise.all(Object.values(sheets).map(s => getAll(s)))
+				.then((dataArr) => {
+					const result = Object.keys(sheets)
+						.reduce((acc, key, index) => ({ ...acc, [key]: dataArr[index] }), {})
+					resolve(result as RawRecords)
+				})
 		})
 	})
 })
@@ -94,32 +136,42 @@ function groupTransactionsByKey(transactions: Transaction[], key: string): Trans
 	return Object.values(transactionsByKey)
 }
 
-function parseRawTransactions(rawTransactions: string[][]): Dataset {
-	rawTransactions.shift() // skip header row
-	const transactions = rawTransactions.map(t => new Transaction(t))
+function parseRawRecords(rawRecords: RawRecords): Dataset {
+	// skip header rows
+	rawRecords.transactions.shift()
+	rawRecords.notes.shift()
+
+	const notesByKey = rawRecords.notes.map(n => new Note(n))
+		.reduce((all: any, n) => {
+			all[n.about] = all[n.about] || [];
+			all[n.about].push(n)
+			return all
+		}, {})
+	const transactions = rawRecords.transactions.map(t => new Transaction(t))
 		.sort((a, b) => b.date.getTime() - a.date.getTime())
 	const accounts = groupTransactionsByKey(transactions, 'account')
 		.map(t => new Account(t))
 	const entities = groupTransactionsByKey(transactions, 'entity')
 		.map(t => new Entity(t))
+		.map(e => e.setNotes(notesByKey[e.name]))
 		.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
 	return { transactions, accounts, entities }
 }
 
-const cachedTransactions = window.localStorage.getItem('transactions')
+const cachedRawRecords = window.localStorage.getItem('rawRecords')
 
-export const defaultDataset: Dataset = cachedTransactions
-	? parseRawTransactions(JSON.parse(cachedTransactions))
+export const defaultDataset: Dataset = cachedRawRecords
+	? parseRawRecords(JSON.parse(cachedRawRecords))
 	: { transactions: [], accounts: [], entities: [] }
 
 export const DatasetContext = React.createContext(defaultDataset)
 
 export const loadDataset = async () => {
-	const rawTransactions: string[][] = await getTransactions()
-	if (!rawTransactions) {
+	const rawRecords = await fetchRawRecords()
+	if (!rawRecords.transactions) {
 		console.error('Could not fetch any transactions!')
 		return defaultDataset
 	}
-	window.localStorage.setItem('transactions', JSON.stringify(rawTransactions))
-	return parseRawTransactions(rawTransactions)
+	window.localStorage.setItem('rawRecords', JSON.stringify(rawRecords))
+	return parseRawRecords(rawRecords)
 }
