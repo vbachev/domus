@@ -30,6 +30,17 @@ export default function EntityPage(props: any) {
 				</ul>
 			</div>
 
+			{entity.notes.length > 0 && (
+				<div className='list-group mb-3'>
+					{entity.notes.map(note => (
+						<div key={note.date.getTime()} className='list-group-item list-group-item-warning'>
+							<small className='mr-2'>{note.formattedDate}</small>
+							{note.message}
+						</div>
+					))}
+				</div>
+			)}
+
 			{activeView === views[1] && (
 				<div className='list-group'>
 					{entity.people.map(person => (
@@ -42,9 +53,8 @@ export default function EntityPage(props: any) {
 
 			{activeView === views[0] && (
 				<div className='list-group'>
-					{entity.transactions.map((t, i) => (
-						<div key={t.date + t.comment + t.amount}
-							className={`list-group-item ${i === 0 ? 'list-group-item-warning text-body' : ''}`}>
+					{entity.transactions.map(t => (
+						<div key={t.date + t.comment + t.amount} className='list-group-item'>
 							<small className='d-flex justify-content-between align-items-center'>
 								<div>{t.getFormattedDate()}</div>
 								<div>{t.person}</div>
