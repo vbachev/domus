@@ -1,28 +1,5 @@
-import GSAPI from 'google-sheets-api'
-import { RawRecords, Content, Transaction, Account, Entity, Note } from './types'
-
-const promisify = (fn: Function) => (...args: any) => new Promise(resolve => fn(...args, resolve))
-
-const fetchRawRecords = (): Promise<RawRecords> => new Promise(resolve => {
-	const sheets = {
-		transactions: 'Движения',
-		notes: 'Бележки'
-	}
-	const gsapi = GSAPI({
-		clientId: '780267795399-048pa12qtdcpdganklc6ggmpbm3epucv.apps.googleusercontent.com',
-		spreadsheet: { name: 'База данни ЕС', sheets: Object.values(sheets) }
-	}, () => {
-		gsapi.user.signIn(() => {
-			const getAll = promisify(gsapi.getAll)
-			Promise.all(Object.values(sheets).map(s => getAll(s)))
-				.then((dataArr) => {
-					const result = Object.keys(sheets)
-						.reduce((acc, key, index) => ({ ...acc, [key]: dataArr[index] }), {})
-					resolve(result as RawRecords)
-				})
-		})
-	})
-})
+import { SpreadsheetData, getCachedData, fetchAllData, insertRow } from './store/googleSheets'
+import { Content, Transaction, Account, Entity, Note } from './types'
 
 function groupTransactionsByKey(transactions: Transaction[], key: string): Transaction[][] {
 	const transactionsByKey = transactions.reduce((all: any, t) => {
@@ -34,18 +11,18 @@ function groupTransactionsByKey(transactions: Transaction[], key: string): Trans
 	return Object.values(transactionsByKey)
 }
 
-function parseRawRecords(rawRecords: RawRecords): Content {
+function parseSpreadsheet(data: SpreadsheetData): Content {
 	// skip header rows
-	rawRecords.transactions.shift()
-	rawRecords.notes.shift()
+	data.transactions.shift()
+	data.notes.shift()
 
-	const notesByKey = rawRecords.notes.map(n => new Note(n))
+	const notesByKey = data.notes.map(n => new Note(n))
 		.reduce((all: any, n) => {
 			all[n.about] = all[n.about] || [];
 			all[n.about].push(n)
 			return all
 		}, {})
-	const transactions = rawRecords.transactions.map(t => new Transaction(t))
+	const transactions = data.transactions.map(t => new Transaction(t))
 		.sort((a, b) => b.date.getTime() - a.date.getTime())
 	const accounts = groupTransactionsByKey(transactions, 'account')
 		.map(t => new Account(t))
@@ -56,29 +33,10 @@ function parseRawRecords(rawRecords: RawRecords): Content {
 	return { transactions, accounts, entities, insert: () => { } }
 }
 
-const cachedRawRecords = window.localStorage.getItem('rawRecords')
+export const initialContent: Content = parseSpreadsheet(getCachedData())
 
-export const initialContent: Content = parseRawRecords(cachedRawRecords
-	? JSON.parse(cachedRawRecords)
-	: { transactions: [], notes: [] }
-)
+export const fetchContent = () => fetchAllData().then(parseSpreadsheet)
 
-export const fetchContent = async () => {
-	const rawRecords = await fetchRawRecords()
-	if (!rawRecords.transactions) {
-		console.error('Could not fetch any transactions!')
-		return initialContent
-	}
-	window.localStorage.setItem('rawRecords', JSON.stringify(rawRecords))
-	return parseRawRecords(rawRecords)
-}
-
-export const insertContent = async (newContent: Note) => {
-	const cachedRawRecords = window.localStorage.getItem('rawRecords')
-	const rawRecords = cachedRawRecords
-		? JSON.parse(cachedRawRecords)
-		: { transactions: [], notes: [] }
-	rawRecords.notes.push(newContent.toRawRecord())
-	window.localStorage.setItem('rawRecords', JSON.stringify(rawRecords))
-	return parseRawRecords(rawRecords)
+export const insertContent = (newContent: Note) => {
+	return insertRow('notes', newContent.toRawRecord()).then(parseSpreadsheet)
 }
