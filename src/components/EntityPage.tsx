@@ -1,8 +1,9 @@
 import React from 'react'
-import { DatasetContext } from './dataset'
+import { useStore } from './StoreProvider'
+import NotesList from './NotesList'
 
 export default function EntityPage(props: any) {
-	const { entities } = React.useContext(DatasetContext)
+	const { entities } = useStore()
 	const { name } = props.match.params;
 	const entity = entities.find(e => e.name === name);
 	const views = ['Движения', 'Хора'];
@@ -30,16 +31,7 @@ export default function EntityPage(props: any) {
 				</ul>
 			</div>
 
-			{entity.notes.length > 0 && (
-				<div className='list-group mb-3'>
-					{entity.notes.map(note => (
-						<div key={note.date.getTime()} className='list-group-item list-group-item-warning'>
-							<small className='mr-2'>{note.formattedDate}</small>
-							{note.message}
-						</div>
-					))}
-				</div>
-			)}
+			<NotesList about={name} notes={entity.notes} />
 
 			{activeView === views[1] && (
 				<div className='list-group'>

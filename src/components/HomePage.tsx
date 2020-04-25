@@ -1,8 +1,8 @@
 import React from 'react'
-import { DatasetContext } from './dataset'
+import { useStore } from './StoreProvider'
 
 export default function HomePage() {
-	const { accounts } = React.useContext(DatasetContext)
+	const { accounts } = useStore()
 	const total = accounts.reduce((total, account) => total + account.amount, 0)
 
 	return (

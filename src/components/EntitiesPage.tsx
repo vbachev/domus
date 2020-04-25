@@ -1,9 +1,9 @@
 import React from 'react'
-import { DatasetContext } from './dataset'
+import { useStore } from './StoreProvider'
 import { Link } from 'react-router-dom'
 
 export default function EntitiesPage() {
-	const { entities } = React.useContext(DatasetContext)
+	const { entities } = useStore()
 	const views = ['Азбучно', 'Длъжници'];
 	const [activeView, setActiveView] = React.useState(views[0]);
 	const changeView = (e: any) => {
