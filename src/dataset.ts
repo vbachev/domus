@@ -46,10 +46,11 @@ export const fetchContent = () => fetchAllData().then(parseSpreadsheet)
 export const insertContent = (newContent: string[]) => {
 	const now = new Date()
 	const dateString = [
-		now.getDate(),
 		now.getMonth() + 1, // months are 0-based
+		now.getDate(),
 		now.getFullYear()
-	].map(i => i.toString().padStart(2, '0')).join('.');
+	].join('/');
 	newContent.unshift(dateString)
+	// @TODO: need to insert m/d/yyyy in google and dd.mm.yyyy in localstorage :(
 	return insertRow('notes', newContent).then(parseSpreadsheet)
 }
