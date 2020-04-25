@@ -48,7 +48,7 @@ export default function EntityPage(props: any) {
 					{entity.transactions.map(t => (
 						<div key={t.date + t.comment + t.amount} className='list-group-item'>
 							<small className='d-flex justify-content-between align-items-center'>
-								<div>{t.getFormattedDate()}</div>
+								<div>{t.formattedDate}</div>
 								<div>{t.person}</div>
 							</small>
 							<span className='badge badge-secondary mr-2'>

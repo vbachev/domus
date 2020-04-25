@@ -1,6 +1,7 @@
 export class Transaction {
 	[key: string]: any
 	date: Date
+	formattedDate: string
 	account: string
 	amount: number
 	person: string
@@ -11,22 +12,12 @@ export class Transaction {
 	constructor(row: string[]) {
 		const [day, month, year] = row[0].split('.').map(Number);
 		this.date = new Date(year, month - 1, day) // months are 0-based
+		this.formattedDate = row[0]
 		this.account = row[3]
 		this.amount = Number(row[4])
 		this.person = row[2]
 		this.entity = row[1]
 		this.comment = row[5]
-	}
-
-	// @TODO: simplify
-	getFormattedDate(): string {
-		return [
-			this.date.getDate(),
-			this.date.getMonth() + 1, // months are 0-based
-			this.date.getFullYear()
-		]
-			.map(i => i.toString().padStart(2, '0'))
-			.join('.');
 	}
 }
 
