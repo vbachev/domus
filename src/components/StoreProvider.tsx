@@ -1,5 +1,5 @@
 import React from 'react'
-import { initialContent, fetchContent, insertContent } from '../dataset'
+import { initialContent, fetchContent, insertContent } from '../store'
 
 const ContentContext = React.createContext(initialContent)
 

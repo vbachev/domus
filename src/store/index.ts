@@ -1,4 +1,4 @@
-import { SpreadsheetData, getCachedData, fetchAllData, insertRow } from './store/googleSheets'
+import { SpreadsheetData, getCachedData, fetchAllData, insertRow } from './googleSheets'
 
 class Transaction {
 	[key: string]: any
