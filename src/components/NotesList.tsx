@@ -1,5 +1,4 @@
 import React from 'react'
-import { Note } from '../types'
 import { useStore } from './StoreProvider'
 
 interface NotesListProps {
@@ -14,7 +13,7 @@ export default function NotesList(props: NotesListProps) {
 	const changeNewMessage = (e: any) => setNewMessage(e.target.value)
 	const createNewNote = (e: any) => {
 		e.preventDefault()
-		insert(Note.fromMessage(props.about, newMessage))
+		insert([props.about, newMessage])
 		setNewMessage('')
 	}
 

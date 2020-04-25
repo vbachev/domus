@@ -70,23 +70,4 @@ export class Note {
 		this.about = note[1]
 		this.message = note[2]
 	}
-
-	static fromMessage(about: string, message: string) {
-		const now = new Date()
-		const dateString = [
-			now.getDate(),
-			now.getMonth() + 1, // months are 0-based
-			now.getFullYear()
-		].map(i => i.toString().padStart(2, '0')).join('.');
-		return new Note([dateString, about, message])
-	}
-
-	toRawRecord() {
-		const dateString = [
-			this.date.getDate(),
-			this.date.getMonth() + 1, // months are 0-based
-			this.date.getFullYear()
-		].map(i => i.toString().padStart(2, '0')).join('.');
-		return [dateString, this.about, this.message]
-	}
 }

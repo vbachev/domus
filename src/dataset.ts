@@ -43,6 +43,13 @@ export const initialContent: Content = parseSpreadsheet(getCachedData())
 
 export const fetchContent = () => fetchAllData().then(parseSpreadsheet)
 
-export const insertContent = (newContent: Note) => {
-	return insertRow('notes', newContent.toRawRecord()).then(parseSpreadsheet)
+export const insertContent = (newContent: string[]) => {
+	const now = new Date()
+	const dateString = [
+		now.getDate(),
+		now.getMonth() + 1, // months are 0-based
+		now.getFullYear()
+	].map(i => i.toString().padStart(2, '0')).join('.');
+	newContent.unshift(dateString)
+	return insertRow('notes', newContent).then(parseSpreadsheet)
 }
