@@ -20,7 +20,7 @@ export default function NotesList(props: NotesListProps) {
 	return (
 		<div className='list-group mb-3'>
 			<form className='list-group-item list-group-item-warning' onSubmit={createNewNote} >
-				<small className='mr-2'>{'Бележки: '}</small>
+				<span className='mr-2'>{'Бележки: '}</span>
 				<input value={newMessage} onChange={changeNewMessage} />
 			</form>
 
