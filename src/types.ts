@@ -34,13 +34,11 @@ export class Entity {
 	name: string
 	transactions: Transaction[]
 	people: string[]
-	notes: Note[]
 
 	constructor(transactions: Transaction[]) {
 		this.name = transactions[0].entity;
 		this.transactions = transactions;
 		this.people = Array.from(new Set(transactions.map(t => t.person)));
-		this.notes = [] // @TODO: as second argument
 	}
 
 	getLastPerson(): string {
@@ -53,12 +51,6 @@ export class Entity {
 		const yearsAgo = now.getFullYear() - lastTransaction.date.getFullYear();
 		const monthsAgo = now.getMonth() - lastTransaction.date.getMonth();
 		return yearsAgo * 12 + monthsAgo;
-	}
-
-	// @TODO: as second constructor argument
-	setNotes(notes: Note[]): Entity {
-		if (notes) this.notes = notes
-		return this
 	}
 }
 
@@ -106,16 +98,4 @@ export class Note {
 		].map(i => i.toString().padStart(2, '0')).join('.');
 		return [dateString, this.about, this.message]
 	}
-}
-
-export interface Content {
-	transactions: Transaction[]
-	accounts: Account[]
-	entities: Entity[]
-	insert: Function
-}
-
-export interface RawRecords {
-	transactions: string[][]
-	notes: string[][]
 }

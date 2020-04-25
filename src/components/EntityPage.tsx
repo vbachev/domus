@@ -31,7 +31,7 @@ export default function EntityPage(props: any) {
 				</ul>
 			</div>
 
-			<NotesList about={name} notes={entity.notes} />
+			<NotesList about={name} />
 
 			{activeView === views[1] && (
 				<div className='list-group'>

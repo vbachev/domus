@@ -3,12 +3,13 @@ import { Note } from '../types'
 import { useStore } from './StoreProvider'
 
 interface NotesListProps {
-	notes: Note[],
 	about: string
 }
 
 export default function NotesList(props: NotesListProps) {
-	const { insert } = useStore()
+	const { notes, insert } = useStore()
+	const filteredNotes = notes.filter(n => n.about === props.about)
+
 	const [newMessage, setNewMessage] = React.useState('')
 	const changeNewMessage = (e: any) => setNewMessage(e.target.value)
 	const createNewNote = (e: any) => {
@@ -24,7 +25,7 @@ export default function NotesList(props: NotesListProps) {
 				<input value={newMessage} onChange={changeNewMessage} />
 			</form>
 
-			{props.notes.map(note => (
+			{filteredNotes.map(note => (
 				<div key={note.date.getTime()} className='list-group-item list-group-item-warning'>
 					<small className='mr-2'>{note.formattedDate}</small>
 					{note.message}
